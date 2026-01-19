@@ -7,7 +7,7 @@ classdef RotaryPlatformDriver < handle
 %   rotary platform via serial communication. The class handles all SCPI
 %   commands for position control, limit configuration, and status queries.
 %
-%   The device communicates at 115200 baud, 8N1, CR/LF terminator and
+%   The device communicates at 115200 baud, 8N1, LF terminator and
 %   echoes every command sent to it.
 %
 %   BASIC USAGE:
@@ -89,7 +89,7 @@ classdef RotaryPlatformDriver < handle
             %   to the rotary platform on the specified COM port.
             %
             %   Connection settings: 115200 baud, 8N1, no flow control,
-            %   CR/LF terminator.
+            %   LF terminator.
             %
             %   Example:
             %       platform = RotaryPlatformDriver('COM13');
@@ -104,21 +104,25 @@ classdef RotaryPlatformDriver < handle
             % Create serial port connection
             obj.SerialObj = serialport(comPort, 115200);
             
-            % Configure serial settings
-            configureTerminator(obj.SerialObj, "CR/LF");
-            obj.SerialObj.Timeout = 10;  % seconds
+            % Configure serial settings - device uses LF terminator
+            configureTerminator(obj.SerialObj, "LF");
+            obj.SerialObj.Timeout = 5;  % seconds
             
             % Clear any pending data
             flush(obj.SerialObj);
             
             fprintf('RotaryPlatformDriver connected to %s\n', comPort);
+            fprintf('Settings: 115200 baud, 8N1, LF terminator, Timeout=%ds\n', obj.SerialObj.Timeout);
             
             % Test connection
             try
+                fprintf('Sending *IDN? command...\n');
                 id = obj.getID();
                 fprintf('Device: %s\n', id);
             catch ME
-                warning('Could not communicate with device: %s', ME.message);
+                warning('RotaryPlatformDriver:connection', ...
+                    'Could not communicate with device on %s:\n%s\nCheck: 1) Device is powered on, 2) Correct COM port, 3) No other program is using the port', ...
+                    comPort, ME.message);
             end
         end
 
@@ -296,6 +300,24 @@ classdef RotaryPlatformDriver < handle
             enabled = str2double(response) == 1;
         end
         
+        function setMotorEnableLocal(obj, enable)
+            %SETMOTORENABLELOCAL Set local motor enable status remotely
+            %
+            %   SETMOTORENABLELOCAL(OBJ, ENABLE) enables or disables
+            %   the motor lock remotely, allowing or preventing manual
+            %   movement of the stepper motor.
+            %
+            %   ENABLE: true/1 to unlock motor (allow manual movement)
+            %           false/0 to lock motor (prevent manual movement)
+            %
+            %   Example:
+            %       platform.setMotorEnableLocal(true);  % Unlock motor
+            %       platform.setMotorEnableLocal(false); % Lock motor
+            %
+            value = double(logical(enable));
+            obj.writeDevice(['MOTOR:ENABLELOCal ' num2str(value)]);
+        end
+        
         function enabled = isMotorEnableRemote(obj)
             %ISMOTORENABLEREMOTE Query remote motor enable status
             %
@@ -355,20 +377,44 @@ classdef RotaryPlatformDriver < handle
         end
         
         function response = queryDevice(obj, cmd)
-            % Query device that echoes every command
-            % Reads 2 lines: 1st is echo (discard), 2nd is actual response
+            % Query device - try to handle echo if present
+            
+            % Clear any stale data
+            flush(obj.SerialObj);
+            
+            % Send command
             writeline(obj.SerialObj, cmd);
+            
+            % Small delay to let device process
             pause(0.1);
             
-            % Read echo line (device echoes the query)
-            try
-                readline(obj.SerialObj);  % Discard echo
-            catch
-                % No echo - continue
+            % Check if data is available
+            if obj.SerialObj.NumBytesAvailable == 0
+                error('RotaryPlatformDriver:queryDevice', ...
+                    'No response from device for command "%s". Check connection and baud rate.', cmd);
             end
             
-            % Read actual response
-            response = strtrim(char(readline(obj.SerialObj)));
+            % Read first line - could be echo or response
+            try
+                firstLine = strtrim(char(readline(obj.SerialObj)));
+            catch ME
+                error('RotaryPlatformDriver:queryDevice', ...
+                    'Failed to read from device for command "%s": %s', cmd, ME.message);
+            end
+            
+            % Check if device echoes: if first line matches command, read next line
+            if strcmp(firstLine, cmd)
+                % Device echoes - read actual response
+                try
+                    response = strtrim(char(readline(obj.SerialObj)));
+                catch ME
+                    error('RotaryPlatformDriver:queryDevice', ...
+                        'Failed to read response after echo for command "%s": %s', cmd, ME.message);
+                end
+            else
+                % No echo - first line is the response
+                response = firstLine;
+            end
         end
     end
 end

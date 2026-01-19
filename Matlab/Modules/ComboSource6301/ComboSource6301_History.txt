@@ -1,0 +1,124 @@
+ComboSource6301 Class - Version History
+=====================================
+
+Version 1.0.0 (2026-01-18)
+--------------------------
+Initial Release
+
+Features:
+- Full laser controller support via RS-232/USB interface
+- Inherits from VisaIF class for VISA communication
+- Comprehensive laser control functionality:
+  * Enable/disable laser output
+  * Constant current mode control
+  * Constant power mode control
+  * Current setpoint and measurement
+  * Power setpoint and measurement
+  * Current and power limit configuration
+  * Temperature monitoring (laser diode and TEC)
+  * Temperature limit configuration
+  * Operating mode selection (CURR/POW)
+  * Interlock status monitoring
+  * Over-temperature detection
+  * Front panel lock/unlock
+  * Device identification and error handling
+  * Status byte queries
+  
+Methods (28 total):
+Constructor/Destructor:
+- ComboSource6301()     : Constructor - create object and connect
+- delete()              : Destructor - cleanup and disconnect
+
+Device Information (4):
+- getID()               : Get device identification string
+- getError()            : Get last error from device
+- clear()               : Clear device status
+- reset()               : Reset device to factory defaults
+
+Laser Control (3):
+- enableLaser()         : Enable laser output
+- disableLaser()        : Disable laser output
+- isLaserEnabled()      : Query laser state
+
+Current Control (5):
+- setCurrent()          : Set drive current (mA)
+- getCurrent()          : Get current setpoint (mA)
+- getMeasuredCurrent()  : Get measured current (mA)
+- setCurrentLimit()     : Set maximum current limit (mA)
+- getCurrentLimit()     : Get current limit (mA)
+
+Power Control (5):
+- setPower()            : Set output power (mW)
+- getPower()            : Get power setpoint (mW)
+- getMeasuredPower()    : Get measured power (mW)
+- setPowerLimit()       : Set maximum power limit (mW)
+- getPowerLimit()       : Get power limit (mW)
+
+Temperature Monitoring (6):
+- getTemperature()      : Get laser diode temperature (°C)
+- getTECCurrent()       : Get TEC current (A)
+- setTempLimitLow()     : Set minimum temperature limit (°C)
+- getTempLimitLow()     : Get minimum temperature limit (°C)
+- setTempLimitHigh()    : Set maximum temperature limit (°C)
+- getTempLimitHigh()    : Get maximum temperature limit (°C)
+
+Operating Mode (3):
+- setModeConstantCurrent() : Set to constant current mode
+- setModeConstantPower()   : Set to constant power mode
+- getMode()                : Get current mode (CURR/POW)
+
+Safety and Status (5):
+- getStatus()           : Get device status byte
+- isInterlockClosed()   : Check interlock status
+- isOverTemp()          : Check over-temperature condition
+- lock()                : Lock front panel buttons
+- unlock()              : Unlock front panel buttons
+
+Properties:
+- ComboSourceVersion    : Class version (read-only)
+- ComboSourceDate       : Release date (read-only)
+- ErrorMessages         : Error queue (read-only, dependent)
+
+Documentation:
+- Complete inline documentation for all methods
+- Comprehensive HTML documentation (ComboSource6301.html)
+- Demonstration script (Howto_control_ComboSource6301.m)
+- 6 detailed usage examples in HTML docs
+
+Unit Handling:
+- Automatic conversion between user units and SCPI units
+- User methods use mA, mW, °C
+- SCPI commands use SI units (A, W)
+
+Error Handling:
+- Status output for all methods
+- Error message queue support
+- Comprehensive error checking
+
+Safety Features:
+- Interlock status checking
+- Over-temperature monitoring
+- Current and power limits
+- Temperature limits
+- Front panel locking
+
+Compatibility:
+- MATLAB R2024a or newer
+- Instrument Control Toolbox 24.1
+- NI-VISA 21.5
+- VisaIF version 3.0.0 or newer
+
+Known Issues:
+- None reported
+
+Testing:
+- Tested with ComboSource 6301 hardware
+- RS-232 and USB interfaces verified
+- All 28 methods tested
+- Example scripts verified
+
+Notes:
+- Class follows FGen design pattern
+- Similar structure to other instrument classes
+- Professional HTML documentation included
+- Comprehensive safety warnings included

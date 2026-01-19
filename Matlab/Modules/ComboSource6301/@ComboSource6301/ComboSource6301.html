@@ -1,0 +1,549 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+   <title>ComboSource6301 - Control interface for ComboSource 6301 laser controller</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <style type="text/css">
+      body {
+         background-color: white;
+         margin: 10px;
+         font-family: "Segoe UI", Arial, sans-serif;
+         font-size: 10pt;
+      }
+      h1 {
+         color: rgb(192,76,11);
+         font-size: 20pt;
+         font-weight: normal;
+         margin-top: 10px;
+      }
+      h2 {
+         color: rgb(192,76,11);
+         font-size: 13pt;
+         font-weight: bold;
+         margin-top: 20px;
+         border-bottom: 1px solid #D0D0D0;
+      }
+      h3 {
+         color: rgb(0,0,0);
+         font-size: 11pt;
+         font-weight: bold;
+         margin-top: 15px;
+      }
+      pre {
+         background-color: #F5F5F5;
+         border: 1px solid #D0D0D0;
+         padding: 10px;
+         font-family: "Consolas", "Courier New", monospace;
+         font-size: 9pt;
+      }
+      code {
+         font-family: "Consolas", "Courier New", monospace;
+         background-color: #F5F5F5;
+         padding: 2px 4px;
+      }
+      table {
+         border-collapse: collapse;
+         margin: 10px 0;
+      }
+      th, td {
+         border: 1px solid #D0D0D0;
+         padding: 8px;
+         text-align: left;
+      }
+      th {
+         background-color: #F0F0F0;
+         font-weight: bold;
+      }
+      .note {
+         background-color: #E7F3FF;
+         border-left: 4px solid #0076C0;
+         padding: 10px;
+         margin: 10px 0;
+      }
+      .warning {
+         background-color: #FFF4E5;
+         border-left: 4px solid #FF9800;
+         padding: 10px;
+         margin: 10px 0;
+      }
+   </style>
+</head>
+<body>
+
+<h1>ComboSource6301</h1>
+<p>Control interface for ComboSource 6301 laser controller</p>
+
+<h2>Description</h2>
+<p>
+   <code>ComboSource6301</code> provides a MATLAB interface to control the ComboSource 6301 
+   laser controller via RS-232/USB using VisaIF. The class handles all SCPI commands for 
+   laser output control, current/power configuration, temperature monitoring, and safety features.
+</p>
+
+<div class="warning">
+   <strong>Laser Safety Warning:</strong> This device controls a laser. Always follow 
+   proper laser safety procedures, wear appropriate protective equipment, and ensure 
+   the interlock is properly connected before operation.
+</div>
+
+<h2>Syntax</h2>
+<pre>
+myLaser = ComboSource6301(device)
+myLaser = ComboSource6301(device, interface)
+myLaser = ComboSource6301(device, interface, showmsg)
+</pre>
+
+<h2>Properties</h2>
+<table>
+   <tr>
+      <th>Property</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>ComboSourceVersion</code></td>
+      <td>Version string (Constant)</td>
+   </tr>
+   <tr>
+      <td><code>ComboSourceDate</code></td>
+      <td>Release date (Constant)</td>
+   </tr>
+   <tr>
+      <td><code>ErrorMessages</code></td>
+      <td>Cell array of error messages from device error queue (Dependent)</td>
+   </tr>
+</table>
+
+<h2>Methods</h2>
+
+<h3>Constructor</h3>
+<table>
+   <tr>
+      <th>Method</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>ComboSource6301(device, interface, showmsg)</code></td>
+      <td>Create connection to laser controller via VisaIF</td>
+   </tr>
+</table>
+
+<h3>Device Information</h3>
+<table>
+   <tr>
+      <th>Method</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>getID()</code></td>
+      <td>Get device identification string</td>
+   </tr>
+   <tr>
+      <td><code>getError()</code></td>
+      <td>Get next error from error queue</td>
+   </tr>
+   <tr>
+      <td><code>clear()</code></td>
+      <td>Clear device status and error queue</td>
+   </tr>
+   <tr>
+      <td><code>reset()</code></td>
+      <td>Reset device to power-on defaults</td>
+   </tr>
+</table>
+
+<h3>Laser Control</h3>
+<table>
+   <tr>
+      <th>Method</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>enableLaser()</code></td>
+      <td>Enable laser output (requires closed interlock)</td>
+   </tr>
+   <tr>
+      <td><code>disableLaser()</code></td>
+      <td>Disable laser output (safety feature)</td>
+   </tr>
+   <tr>
+      <td><code>isLaserEnabled()</code></td>
+      <td>Query if laser output is currently enabled</td>
+   </tr>
+</table>
+
+<h3>Current Control</h3>
+<table>
+   <tr>
+      <th>Method</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>setCurrent(current_mA)</code></td>
+      <td>Set laser current setpoint in milliamperes (mA)</td>
+   </tr>
+   <tr>
+      <td><code>getCurrent()</code></td>
+      <td>Query current setpoint in mA</td>
+   </tr>
+   <tr>
+      <td><code>getMeasuredCurrent()</code></td>
+      <td>Measure actual laser current in mA</td>
+   </tr>
+   <tr>
+      <td><code>setCurrentLimit(limit_mA)</code></td>
+      <td>Set current compliance limit in mA</td>
+   </tr>
+   <tr>
+      <td><code>getCurrentLimit()</code></td>
+      <td>Query current limit in mA</td>
+   </tr>
+</table>
+
+<h3>Power Control</h3>
+<table>
+   <tr>
+      <th>Method</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>setPower(power_mW)</code></td>
+      <td>Set laser power setpoint in milliwatts (mW)</td>
+   </tr>
+   <tr>
+      <td><code>getPower()</code></td>
+      <td>Query power setpoint in mW</td>
+   </tr>
+   <tr>
+      <td><code>getMeasuredPower()</code></td>
+      <td>Measure actual laser power in mW</td>
+   </tr>
+   <tr>
+      <td><code>setPowerLimit(limit_mW)</code></td>
+      <td>Set power compliance limit in mW</td>
+   </tr>
+   <tr>
+      <td><code>getPowerLimit()</code></td>
+      <td>Query power limit in mW</td>
+   </tr>
+</table>
+
+<h3>Temperature Monitoring</h3>
+<table>
+   <tr>
+      <th>Method</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>getTemperature()</code></td>
+      <td>Measure laser diode temperature in °C</td>
+   </tr>
+   <tr>
+      <td><code>getTECCurrent()</code></td>
+      <td>Get thermoelectric cooler current in amperes (A)</td>
+   </tr>
+   <tr>
+      <td><code>setTempLimitLow(temp_C)</code></td>
+      <td>Set lower temperature limit in °C</td>
+   </tr>
+   <tr>
+      <td><code>getTempLimitLow()</code></td>
+      <td>Query lower temperature limit in °C</td>
+   </tr>
+   <tr>
+      <td><code>setTempLimitHigh(temp_C)</code></td>
+      <td>Set upper temperature limit in °C</td>
+   </tr>
+   <tr>
+      <td><code>getTempLimitHigh()</code></td>
+      <td>Query upper temperature limit in °C</td>
+   </tr>
+</table>
+
+<h3>Operating Mode</h3>
+<table>
+   <tr>
+      <th>Method</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>setModeConstantCurrent()</code></td>
+      <td>Switch to constant current (CC) mode</td>
+   </tr>
+   <tr>
+      <td><code>setModeConstantPower()</code></td>
+      <td>Switch to constant power (CP) mode</td>
+   </tr>
+   <tr>
+      <td><code>getMode()</code></td>
+      <td>Query current operating mode ('CC' or 'CP')</td>
+   </tr>
+</table>
+
+<h3>Safety and Status</h3>
+<table>
+   <tr>
+      <th>Method</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>getStatus()</code></td>
+      <td>Read device status byte</td>
+   </tr>
+   <tr>
+      <td><code>isInterlockClosed()</code></td>
+      <td>Check if safety interlock is closed (laser can operate)</td>
+   </tr>
+   <tr>
+      <td><code>isOverTemp()</code></td>
+      <td>Check if over-temperature fault is active</td>
+   </tr>
+   <tr>
+      <td><code>lock()</code></td>
+      <td>Lock front panel controls</td>
+   </tr>
+   <tr>
+      <td><code>unlock()</code></td>
+      <td>Unlock front panel controls</td>
+   </tr>
+</table>
+
+<div class="note">
+   <strong>Operating Modes:</strong>
+   <ul style="margin: 5px 0 0 20px;">
+      <li><strong>Constant Current (CC):</strong> Laser current is regulated to setpoint. Use for current-driven applications.</li>
+      <li><strong>Constant Power (CP):</strong> Laser power is regulated to setpoint. Use for power-stability applications.</li>
+   </ul>
+</div>
+
+<h2>Examples</h2>
+
+<h3>Basic Connection and Identification</h3>
+<pre>
+% Connect to laser controller
+myLaser = ComboSource6301('combosource');
+
+% Get device information
+idString = myLaser.getID();
+disp(idString);
+
+% Check safety
+if myLaser.isInterlockClosed()
+    disp('Interlock OK - safe to operate');
+else
+    warning('Interlock open - cannot enable laser!');
+end
+
+% Close connection
+myLaser.delete();
+</pre>
+
+<h3>Constant Current Operation</h3>
+<pre>
+myLaser = ComboSource6301('combosource');
+
+% Configure for constant current mode
+myLaser.setModeConstantCurrent();
+myLaser.setCurrentLimit(150);  % 150 mA limit
+myLaser.setCurrent(100);       % 100 mA setpoint
+
+% Enable laser (if interlock is closed)
+if myLaser.isInterlockClosed()
+    myLaser.enableLaser();
+    pause(0.5);
+    
+    % Monitor current
+    measured = myLaser.getMeasuredCurrent();
+    fprintf('Laser current: %.2f mA\n', measured);
+    
+    % Disable laser
+    myLaser.disableLaser();
+end
+
+myLaser.delete();
+</pre>
+
+<h3>Constant Power Operation</h3>
+<pre>
+myLaser = ComboSource6301('combosource');
+
+% Configure for constant power mode
+myLaser.setModeConstantPower();
+myLaser.setPowerLimit(50);   % 50 mW limit
+myLaser.setPower(30);        % 30 mW setpoint
+
+% Enable and monitor
+if myLaser.isInterlockClosed()
+    myLaser.enableLaser();
+    pause(0.5);
+    
+    % Read measurements
+    power = myLaser.getMeasuredPower();
+    current = myLaser.getMeasuredCurrent();
+    fprintf('Power: %.2f mW, Current: %.2f mA\n', power, current);
+    
+    myLaser.disableLaser();
+end
+
+myLaser.delete();
+</pre>
+
+<h3>Temperature Monitoring</h3>
+<pre>
+myLaser = ComboSource6301('combosource');
+
+% Configure temperature limits
+myLaser.setTempLimitLow(15);   % 15°C minimum
+myLaser.setTempLimitHigh(35);  % 35°C maximum
+
+% Monitor temperature
+temp = myLaser.getTemperature();
+tecCurrent = myLaser.getTECCurrent();
+
+fprintf('Temperature: %.2f°C\n', temp);
+fprintf('TEC Current: %.3f A\n', tecCurrent);
+
+% Check for over-temperature
+if myLaser.isOverTemp()
+    warning('Over-temperature fault detected!');
+end
+
+myLaser.delete();
+</pre>
+
+<h3>Safety Checks Before Operation</h3>
+<pre>
+myLaser = ComboSource6301('combosource');
+
+% Comprehensive safety check
+fprintf('Safety Status:\n');
+fprintf('--------------\n');
+
+% Check interlock
+if myLaser.isInterlockClosed()
+    fprintf('✓ Interlock: Closed (Safe)\n');
+else
+    fprintf('✗ Interlock: Open (Unsafe)\n');
+end
+
+% Check temperature
+if myLaser.isOverTemp()
+    fprintf('✗ Temperature: Fault detected\n');
+else
+    fprintf('✓ Temperature: Normal\n');
+end
+
+% Check for errors
+errors = myLaser.ErrorMessages;
+if isempty(errors)
+    fprintf('✓ Error Queue: Clear\n');
+else
+    fprintf('✗ Errors detected:\n');
+    for i = 1:length(errors)
+        fprintf('  %s\n', errors{i});
+    end
+end
+
+myLaser.delete();
+</pre>
+
+<h3>Real-Time Monitoring Loop</h3>
+<pre>
+myLaser = ComboSource6301('combosource');
+
+% Setup
+myLaser.setModeConstantCurrent();
+myLaser.setCurrent(80);
+
+if myLaser.isInterlockClosed()
+    myLaser.enableLaser();
+    
+    % Monitor for 10 seconds
+    fprintf('Time\tCurrent\tPower\tTemp\n');
+    fprintf('(s)\t(mA)\t(mW)\t(°C)\n');
+    fprintf('-----------------------------------\n');
+    
+    for t = 1:10
+        current = myLaser.getMeasuredCurrent();
+        power = myLaser.getMeasuredPower();
+        temp = myLaser.getTemperature();
+        
+        fprintf('%d\t%.2f\t%.2f\t%.2f\n', t, current, power, temp);
+        pause(1);
+    end
+    
+    myLaser.disableLaser();
+end
+
+myLaser.delete();
+</pre>
+
+<div class="note">
+   <strong>Note:</strong> Always call <code>myLaser.delete()</code> or <code>clear myLaser</code> 
+   to properly close the VISA connection when finished. The device will remain in its last state 
+   (laser output may still be ON if not explicitly disabled).
+</div>
+
+<h2>Important Notes</h2>
+
+<h3>Unit Conversions</h3>
+<p>
+   All user-facing methods use convenient units (mA, mW, °C), but the SCPI commands 
+   use SI units (A, W, K). The class handles all conversions automatically.
+</p>
+
+<h3>Safety Features</h3>
+<ul>
+   <li>Interlock must be closed before laser can be enabled</li>
+   <li>Over-temperature protection monitors laser diode temperature</li>
+   <li>Front panel can be locked to prevent accidental changes during automated operation</li>
+   <li>Always disable laser output before disconnecting</li>
+</ul>
+
+<h3>Error Handling</h3>
+<p>
+   All methods return an optional status code (0 = success). Check the 
+   <code>ErrorMessages</code> property to read accumulated errors from the device.
+</p>
+
+<h2>Hardware Requirements</h2>
+<ul>
+   <li>ComboSource 6301 laser controller</li>
+   <li>RS-232 or USB connection</li>
+   <li>NI-VISA 21.5 or later</li>
+   <li>MATLAB R2019b or later</li>
+   <li>Instrument Control Toolbox</li>
+   <li>Properly configured VisaIF device entry</li>
+</ul>
+
+<h2>Software Requirements</h2>
+<ul>
+   <li>VisaIF class (version 3.0.0 or newer)</li>
+   <li>Device must be configured in VisaIF config file</li>
+   <li>See Configuration_Guide.txt for setup instructions</li>
+</ul>
+
+<h2>Inherited Methods from VisaIF</h2>
+<p>
+   In addition to the methods above, all VisaIF methods are available:
+</p>
+<ul>
+   <li><code>write(command)</code> - Send SCPI command</li>
+   <li><code>query(command)</code> - Send command and read response</li>
+   <li><code>read()</code> - Read response from device</li>
+   <li><code>getVisaDeviceInfoString()</code> - Get VISA device info</li>
+</ul>
+
+<h2>See Also</h2>
+<p>
+   <a href="matlab:doc VisaIF">VisaIF</a>, 
+   <a href="matlab:doc FGen">FGen</a>,
+   <a href="matlab:doc Scope">Scope</a>
+</p>
+
+<p style="margin-top: 30px; font-size: 8pt; color: #808080;">
+   Copyright © 2026 HTW Dresden. Version 1.0.0<br>
+   Last updated: 19.01.2026
+</p>
+
+</body>
+</html>

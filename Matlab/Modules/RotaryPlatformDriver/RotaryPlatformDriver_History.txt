@@ -1,0 +1,62 @@
+RotaryPlatformDriver - Version History
+=======================================
+
+Version 2.0.0 (2026-01-18)
+--------------------------
+- Added comprehensive HTML documentation (open with: RotaryPlatformDriver.doc())
+- Added new motor diagnostics commands:
+  * isMotorEnableLocal() - Check if green enable button is pressed
+  * isMotorEnableRemote() - Query remote motor enable status
+  * setMotorEnableRemote(enable) - Enable/disable motor from remote interface
+  * isMotorVoltLockout() - Check for under-voltage condition
+- Updated isMotorEnabled() - Now returns AND combination of all motor conditions
+- Improved echo handling for device that echoes every command
+- Better error diagnostics with new motor status methods
+- Enhanced documentation with detailed examples
+
+Breaking Changes:
+- None (constructor signature unchanged from v1.0.0)
+
+Features:
+- All original SCPI commands (position control, limits, local lock)
+- Enhanced motor diagnostics (4 new methods)
+- Native serial communication (115200 baud, 8N1, CR/LF)
+- Professional HTML documentation with examples
+- Robust handling of command echo
+
+Tested with:
+- MATLAB R2025b
+- Windows serialport (no VISA required)
+
+
+Version 1.0.0 (2025-12-06)
+--------------------------
+- Initial release
+- Basic rotary platform control functionality using MATLAB serialport
+- SCPI commands supported:
+  * *IDN? - Device identification
+  * SYSTem:ERRor? - Error queue
+  * SYSTem:LOCal:LOCK/UNLock - Local control lock
+  * ROTAtion:ANGLE - Set/query target angle
+  * ROTAtion:POSition? - Query actual position
+  * ROTAtion:REACHED? - Check if target reached
+  * ROTAtion:LIMit:UPPer/LOWer - Set/query angle limits
+  * MOTOR:ENABLED? - Basic motor status (WITHOUT detailed diagnostics)
+- Simple serial communication (115200 baud, 8N1)
+- Direct SCPI command interface
+
+Note: Version 1.0.0 only supported basic motor status query.
+      Motor diagnostics (enableLocal, enableRemote, voltLockout) added in v2.0.0.
+
+Features:
+- Platform control methods
+- Direct serial communication (write, readline)
+- Basic error handling
+- Simple constructor with COM port parameter
+
+Tested with:
+- MATLAB R2025b
+
+Development:
+- Florian Römer (student)
+- HTW Dresden, Faculty of Electrical Engineering

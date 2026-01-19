@@ -1,0 +1,367 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+   <title>RotaryPlatformDriver - Control interface for HTWD-DT-2025 rotary platform</title>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <style type="text/css">
+      body {
+         background-color: white;
+         margin: 10px;
+         font-family: "Segoe UI", Arial, sans-serif;
+         font-size: 10pt;
+      }
+      h1 {
+         color: rgb(192,76,11);
+         font-size: 20pt;
+         font-weight: normal;
+         margin-top: 10px;
+      }
+      h2 {
+         color: rgb(192,76,11);
+         font-size: 13pt;
+         font-weight: bold;
+         margin-top: 20px;
+         border-bottom: 1px solid #D0D0D0;
+      }
+      h3 {
+         color: rgb(0,0,0);
+         font-size: 11pt;
+         font-weight: bold;
+         margin-top: 15px;
+      }
+      pre {
+         background-color: #F5F5F5;
+         border: 1px solid #D0D0D0;
+         padding: 10px;
+         font-family: "Consolas", "Courier New", monospace;
+         font-size: 9pt;
+      }
+      code {
+         font-family: "Consolas", "Courier New", monospace;
+         background-color: #F5F5F5;
+         padding: 2px 4px;
+      }
+      table {
+         border-collapse: collapse;
+         margin: 10px 0;
+      }
+      th, td {
+         border: 1px solid #D0D0D0;
+         padding: 8px;
+         text-align: left;
+      }
+      th {
+         background-color: #F0F0F0;
+         font-weight: bold;
+      }
+      .note {
+         background-color: #E7F3FF;
+         border-left: 4px solid #0076C0;
+         padding: 10px;
+         margin: 10px 0;
+      }
+   </style>
+</head>
+<body>
+
+<h1>RotaryPlatformDriver</h1>
+<p>Control interface for HTWD-DT-2025 rotary platform</p>
+
+<h2>Description</h2>
+<p>
+   <code>RotaryPlatformDriver</code> provides a MATLAB interface to control a custom
+   rotary platform via serial communication. The class handles all SCPI commands for 
+   position control, limit configuration, and status queries.
+</p>
+<p>
+   The device communicates at 115200 baud, 8 data bits, no parity, 1 stop bit, 
+   no flow control, with CR/LF line terminator. The device echoes every command sent to it.
+</p>
+
+<h2>Syntax</h2>
+<pre>
+platform = RotaryPlatformDriver(comPort)
+</pre>
+
+<h2>Properties</h2>
+<table>
+   <tr>
+      <th>Property</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>RotaryPlatformDriverVersion</code></td>
+      <td>Version string (Constant)</td>
+   </tr>
+   <tr>
+      <td><code>RotaryPlatformDriverDate</code></td>
+      <td>Release date (Constant)</td>
+   </tr>
+</table>
+
+<h2>Methods</h2>
+
+<h3>Constructor</h3>
+<table>
+   <tr>
+      <th>Method</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>RotaryPlatformDriver(comPort)</code></td>
+      <td>Create connection to rotary platform on specified COM port</td>
+   </tr>
+</table>
+
+<h3>Device Information</h3>
+<table>
+   <tr>
+      <th>Method</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>getID()</code></td>
+      <td>Get device identification string</td>
+   </tr>
+   <tr>
+      <td><code>getError()</code></td>
+      <td>Get error from error queue</td>
+   </tr>
+</table>
+
+<h3>Position Control</h3>
+<table>
+   <tr>
+      <th>Method</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>setAngle(angle)</code></td>
+      <td>Set target angle in degrees (-360 to 360)</td>
+   </tr>
+   <tr>
+      <td><code>getTargetAngle()</code></td>
+      <td>Query commanded target angle</td>
+   </tr>
+   <tr>
+      <td><code>getPosition()</code></td>
+      <td>Query actual current position in degrees</td>
+   </tr>
+   <tr>
+      <td><code>isReached()</code></td>
+      <td>Check if target position is reached and held</td>
+   </tr>
+</table>
+
+<h3>Safety Limits</h3>
+<table>
+   <tr>
+      <th>Method</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>setUpperLimit(angle)</code></td>
+      <td>Set upper angle safety limit in degrees</td>
+   </tr>
+   <tr>
+      <td><code>getUpperLimit()</code></td>
+      <td>Query upper angle safety limit</td>
+   </tr>
+   <tr>
+      <td><code>setLowerLimit(angle)</code></td>
+      <td>Set lower angle safety limit in degrees</td>
+   </tr>
+   <tr>
+      <td><code>getLowerLimit()</code></td>
+      <td>Query lower angle safety limit</td>
+   </tr>
+</table>
+
+<h3>Local Control</h3>
+<table>
+   <tr>
+      <th>Method</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>lockLocal()</code></td>
+      <td>Disable physical buttons on device</td>
+   </tr>
+   <tr>
+      <td><code>unlockLocal()</code></td>
+      <td>Enable physical buttons on device</td>
+   </tr>
+   <tr>
+      <td><code>isLocked()</code></td>
+      <td>Query if local control is locked</td>
+   </tr>
+</table>
+
+<h3>Motor Status</h3>
+<table>
+   <tr>
+      <th>Method</th>
+      <th>Description</th>
+   </tr>
+   <tr>
+      <td><code>isMotorEnabled()</code></td>
+      <td>Query if motor is currently active (AND combination of all conditions)</td>
+   </tr>
+   <tr>
+      <td><code>isMotorEnableLocal()</code></td>
+      <td>Query if green enable button is pressed</td>
+   </tr>
+   <tr>
+      <td><code>isMotorEnableRemote()</code></td>
+      <td>Query remote motor enable status</td>
+   </tr>
+   <tr>
+      <td><code>setMotorEnableRemote(enable)</code></td>
+      <td>Set remote motor enable (true/false) - locks motor when false</td>
+   </tr>
+   <tr>
+      <td><code>isMotorVoltLockout()</code></td>
+      <td>Query if under-voltage lockout is active</td>
+   </tr>
+</table>
+
+<div class="note">
+   <strong>Motor Activation Logic:</strong> The motor is active when ALL of the following are true:
+   <ul style="margin: 5px 0 0 20px;">
+      <li><code>isMotorEnableLocal() == true</code> - Green button is pressed</li>
+      <li><code>isMotorEnableRemote() == true</code> - No remote lockout active</li>
+      <li><code>isMotorVoltLockout() == false</code> - Power supply is OK</li>
+   </ul>
+   <code>isMotorEnabled()</code> returns the AND combination of all three conditions.
+</div>
+
+<h2>Examples</h2>
+
+<h3>Basic Connection and Movement</h3>
+<pre>
+% Connect to device on COM13
+platform = RotaryPlatformDriver('COM13');
+
+% Move to 90 degrees
+platform.setAngle(90);
+pause(2);
+
+% Check if position reached
+if platform.isReached()
+    disp('Position reached!');
+end
+
+% Get current position
+pos = platform.getPosition();
+fprintf('Current position: %.1f degrees\n', pos);
+
+% Close connection
+platform.delete();
+</pre>
+
+<h3>Configure Safety Limits</h3>
+<pre>
+platform = RotaryPlatformDriver('COM7');
+
+% Query current limits
+upper = platform.getUpperLimit();
+lower = platform.getLowerLimit();
+fprintf('Current limits: %.1f to %.1f degrees\n', lower, upper);
+
+% Set new limits (optional)
+platform.setUpperLimit(180);
+platform.setLowerLimit(-180);
+</pre>
+
+<h3>Lock Local Control</h3>
+<pre>
+% Disable physical buttons during automated measurement
+platform = RotaryPlatformDriver('COM13');
+platform.lockLocal();
+
+% Perform measurements...
+for angle = 0:45:180
+    platform.setAngle(angle);
+    pause(1);
+    % ... measure ...
+end
+
+% Re-enable physical buttons
+platform.unlockLocal();
+platform.delete();
+</pre>
+
+<h3>Check Motor Status</h3>
+<pre>
+platform = RotaryPlatformDriver('COM13');
+
+% Check overall motor status
+if platform.isMotorEnabled()
+    disp('Motor is powered and active');
+else
+    % Diagnose why motor is not active
+    fprintf('Motor is NOT active. Checking conditions:\n');
+    
+    localBtn = platform.isMotorEnableLocal();
+    fprintf('  Local button pressed: %d\n', localBtn);
+    
+    remoteEnable = platform.isMotorEnableRemote();
+    fprintf('  Remote enable: %d\n', remoteEnable);
+    
+    voltLockout = platform.isMotorVoltLockout();
+    fprintf('  Voltage lockout: %d\n', voltLockout);
+    
+    if voltLockout
+        warning('Under-voltage detected!');
+    end
+end
+</pre>
+
+<h3>Remote Motor Lockout</h3>
+<pre>
+platform = RotaryPlatformDriver('COM13');
+
+% Disable motor from remote (safety feature)
+% LCD shows lockout message, green button LED turns off
+platform.setMotorEnableRemote(false);
+fprintf('Motor locked from remote\n');
+
+% Try to move (will not work while locked)
+platform.setAngle(90);
+pause(1);
+
+% Check status
+if ~platform.isMotorEnabled()
+    disp('Motor did not move (as expected - locked)');
+end
+
+% Re-enable motor
+platform.setMotorEnableRemote(true);
+fprintf('Motor unlocked\n');
+</pre>
+
+<div class="note">
+   <strong>Note:</strong> Always call <code>platform.delete()</code> or <code>clear platform</code> 
+   to properly close the serial connection when finished.
+</div>
+
+<h2>Hardware Requirements</h2>
+<ul>
+   <li>HTWD-DT-2025 rotary platform</li>
+   <li>Serial connection (USB-to-Serial or direct COM port)</li>
+   <li>MATLAB R2019b or later (for <code>serialport</code> support)</li>
+</ul>
+
+<h2>See Also</h2>
+<p>
+   <a href="matlab:doc serialport">serialport</a>, 
+   <a href="matlab:doc configureTerminator">configureTerminator</a>
+</p>
+
+<p style="margin-top: 30px; font-size: 8pt; color: #808080;">
+   Copyright © 2026 HTW Dresden. Version 2.0.0<br>
+   Last updated: 19.01.2026 by Florian Römer (added motor diagnostics)
+</p>
+
+</body>
+</html>
